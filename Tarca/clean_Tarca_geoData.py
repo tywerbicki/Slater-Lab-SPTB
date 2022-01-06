@@ -1,4 +1,3 @@
-#%%
 import os
 import pandas as pd
 import numpy as np
@@ -13,7 +12,7 @@ DEPOSIT_PATH = os.path.join(CWD, "Processed_Data")
 if not os.path.isdir(DEPOSIT_PATH):
     os.mkdir(DEPOSIT_PATH)
 
-# Phenotype Data Exploration
+# Phenotype data clenaing.
 pheno_data = pd.read_csv(
     os.path.join(GEO_DATA_PATH, "pheno_data_r.csv"),
     header = 0,
@@ -45,11 +44,11 @@ new_names = {
     pheno_columns_to_grab[3] : "birth_outcome"
 }
 
-# Heng et al. collection timepoints.
+# Heng collection timepoints.
 T1 = (16, 24) ; T2 = (26, 34)
 tp_bins = pd.IntervalIndex.from_tuples([T1, T2], closed = "both")
 
-# Check if patient has a probe at both timepoints.
+# Check if patient has an array at both timepoints.
 def has_both_times(df):
     vec = df["gest_age"].values
     t1 = sum( (vec >= T1[0]) & (vec <= T1[1]) ) > 0
@@ -104,6 +103,8 @@ def keep_max_tp(df):
         .drop(["max_per_tp"], axis = 1)
     )
 
+# Insert a column that records the number of weeks 
+# between the sampling of a patient's 2 arrays.
 def insert_dif(df):
 
     gest_age = df["gest_age"].to_numpy()
@@ -148,8 +149,7 @@ pheno_data = (
     .assign(birth_outcome = pheno_data.birth_outcome.cat.remove_unused_categories())
     # Re-assign categories.
     .assign(birth_outcome = (
-        pheno_data
-        .birth_outcome
+        pheno_data.birth_outcome
         .map({"Control" : "term", "PPROM" : "sptb", "sPTD" : "sptb"})
         .astype("category")
         .cat.reorder_categories(["term", "sptb"])
@@ -159,22 +159,24 @@ pheno_data = (
 
 pheno_row_names = pheno_data.index.values
 
-# Expression Data Exploration
+# Expression data cleaning.
 exprs_data = pd.read_csv(
     os.path.join(GEO_DATA_PATH, "exprs_r.txt"),
     sep = "\t",
     header = 0,
     index_col = 0
 ).astype("float32")
+
 # Select columns that correspond with pheno row names.
 exprs_data = exprs_data[pheno_row_names]
 
-# Feature Names Exploration
+# Feature data cleaning.
 feature_data = pd.read_csv(
     os.path.join(GEO_DATA_PATH, "feature_data_r.csv"),
     header = 0,
     index_col = 0
 )
+
 feature_data = (
     feature_data
     # Drop columns.
@@ -183,8 +185,7 @@ feature_data = (
     .assign(ENTREZ_GENE_ID = feature_data.ENTREZ_GENE_ID.fillna(0).astype("int32"))
 )
 
-
-# Deposit Data.
+# Deposit data.
 assert (exprs_data.columns.values == pheno_data.index.values).all()
 assert (exprs_data.index.values == feature_data.index.values).all()
 
