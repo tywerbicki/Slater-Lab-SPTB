@@ -21,4 +21,5 @@
 <br/>
 
 3. Preprocess and model the data:
+
     > Follow the code in `affy_model.py`.
