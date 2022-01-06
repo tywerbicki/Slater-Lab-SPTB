@@ -11,7 +11,7 @@ DEPOSIT_PATH = os.path.join(CWD, "Processed_Data")
 if not os.path.isdir(DEPOSIT_PATH):
     os.mkdir(DEPOSIT_PATH)
 
-# Phenotype Data Exploration
+# Phenotype data cleaning.
 pheno_data = pd.read_csv(
     os.path.join(GEO_DATA_PATH, "pheno_data_r.csv"),
     header = 0,
@@ -75,9 +75,10 @@ pheno_data = (
     # Acquire time difference between samples.
     .pipe(insert_dif)
 )
+
 pheno_row_names = pheno_data.index.values
 
-# Expression Data Exploration
+# Expression data cleaning.
 exprs_data = pd.read_csv(
     os.path.join(GEO_DATA_PATH, "exprs_r.txt"),
     sep = "\t",
@@ -94,7 +95,7 @@ exprs_data.index = (exprs_data.index
 
 exprs_data = exprs_data.loc[:, pheno_row_names]
 
-# Feature Names Exploration
+# Feature data cleaning.
 feature_data = pd.read_csv(
     os.path.join(GEO_DATA_PATH, "feature_data_r.csv"),
     header = 0,
@@ -107,7 +108,9 @@ feature_data.index = (feature_data.index
 
 feature_data = feature_data[["ENTREZ_GENE_ID"]]
 
-# Deposit Data.
+# Deposit data.
+
+# These conditions are necessary for building an ExpressionsetSet object in R.
 assert (exprs_data.columns.values == pheno_data.index.values).all()
 assert (exprs_data.index.values == feature_data.index.values).all()
 
