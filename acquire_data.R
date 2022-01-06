@@ -1,14 +1,15 @@
-# Retrieve GEO package on ARC.
+# Retrieve GEO packages.
 
 BiocManager::install("GEOquery")
 library(GEOquery)
 
-# For Heng et al. data.
+# For Heng data.
 geo_data = getGEO( 
   GEO = "GSE59491",
   GSEMatrix = TRUE
   )
-# For Detroit Data
+  
+# For Tarca data.
 geo_data = getGEO( 
   GEO = "GSE149440",
   GSEMatrix = TRUE
