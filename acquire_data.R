@@ -23,18 +23,3 @@ write.exprs(geo_data, "exprs_r.txt")
 write.csv(pData(geo_data), "pheno_data_r.csv")
 # Extract feature data.
 write.csv(fData(geo_data), "feature_data_r.csv")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
