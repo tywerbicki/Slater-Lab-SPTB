@@ -7,7 +7,7 @@
 
     * Clean the *Heng data* for preprocessing:
     
-        > Follow the code in `./Heng/clean_Heng_data.py`.
+        > Follow the code in `./Heng/clean_Heng_geoData.py`.
 
 <br/>
 
@@ -16,4 +16,4 @@
 
     * Clean the *Tarca data* for preprocessing:
     
-        > Follow the code in `./Tarca/clean_Tarca_data.py`.
+        > Follow the code in `./Tarca/clean_Tarca_geoData.py`.
