@@ -37,7 +37,7 @@ UNDER CONSTRUCTION
     
     * Clean our bulk RNASeq data for preprocessing:
 
-        > Follow the code in `./dir/to/code`
+        > Follow the code in `./Bulk_RNASeq/data_cleaning.py`.
 
 <br/>
 <br/>
