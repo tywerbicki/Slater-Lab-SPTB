@@ -33,7 +33,7 @@ UNDER CONSTRUCTION
 
 ## How to Reproduce Our Bulk RNASeq Results
 
-1. Acquire our bulk RNASeq data by reaching out to [Donna Slater](mailto:dmslater@ucalgary.ca):
+1. Acquire our bulk RNASeq data by reaching out to [Dr. Donna Slater](mailto:dmslater@ucalgary.ca):
     
     * Clean our bulk RNASeq data for preprocessing:
 
