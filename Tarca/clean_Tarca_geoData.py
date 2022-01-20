@@ -12,7 +12,7 @@ DEPOSIT_PATH = os.path.join(CWD, "Processed_Data")
 if not os.path.isdir(DEPOSIT_PATH):
     os.mkdir(DEPOSIT_PATH)
 
-# Phenotype data clenaing.
+# Phenotype data cleaning.
 pheno_data = pd.read_csv(
     os.path.join(GEO_DATA_PATH, "pheno_data_r.csv"),
     header = 0,
@@ -44,7 +44,7 @@ new_names = {
     pheno_columns_to_grab[3] : "birth_outcome"
 }
 
-# Heng collection timepoints.
+# Heng et al. collection timepoints.
 T1 = (16, 24) ; T2 = (26, 34)
 tp_bins = pd.IntervalIndex.from_tuples([T1, T2], closed = "both")
 
@@ -113,6 +113,9 @@ def insert_dif(df):
     df.insert(loc = 3, column = "dif_gest", value = dif)
     return df
 
+
+# Data wrangling (any operations that could change
+# the number of or orientation of rows of the data frame).
 pheno_data = (
     pheno_data
     # Select columns.
@@ -121,10 +124,6 @@ pheno_data = (
     .astype(types)
     # Rename columns.
     .rename(columns = new_names)
-)
-
-pheno_data = (
-    pheno_data
     # Remove patients with induced SPTB.
     .query("birth_outcome != 'Early_Preeclampsia'")
     # Remove arrays acquired at or after delivery.
@@ -139,25 +138,28 @@ pheno_data = (
     .pipe(keep_max_tp)
     # Ensure patient_id is consecutive.
     .sort_values(by = ["patient_id", "gest_age"])
-    # Acquire time difference between samples.
-    .pipe(insert_dif)
 )
 
+
+# Data cleaning (no operations that will change the number
+# of nor orientation of the rows of the data frame).
 pheno_data = (
     pheno_data
-    # Remove unused categories.
-    .assign(birth_outcome = pheno_data.birth_outcome.cat.remove_unused_categories())
-    # Re-assign categories.
-    .assign(birth_outcome = (
-        pheno_data.birth_outcome
-        .map({"Control" : "term", "PPROM" : "sptb", "sPTD" : "sptb"})
-        .astype("category")
-        .cat.reorder_categories(["term", "sptb"])
-        )
+    # Acquire time difference between samples and cohort.
+    .pipe(insert_dif)
+    .assign(
+        # Remove unused categories and then re-assign them.
+        birth_outcome = (
+            pheno_data.birth_outcome
+            .cat.remove_unused_categories()
+            .map({"Control" : "term", "PPROM" : "sptb", "sPTD" : "sptb"})
+            .astype("category")
+            .cat.reorder_categories(["term", "sptb"])
+            ),
+        # Add cohort.
+        cohort = pd.Categorical( ["Tarca"]*len(pheno_data) )
     )
 )
-
-pheno_row_names = pheno_data.index.values
 
 # Expression data cleaning.
 exprs_data = pd.read_csv(
@@ -167,8 +169,9 @@ exprs_data = pd.read_csv(
     index_col = 0
 ).astype("float32")
 
-# Select columns that correspond with pheno row names.
-exprs_data = exprs_data[pheno_row_names]
+# Only want samples that correspond with those
+# left in the pheno data.
+exprs_data = exprs_data.loc[:, pheno_data.index.to_numpy()]
 
 # Feature data cleaning.
 feature_data = pd.read_csv(
@@ -185,7 +188,7 @@ feature_data = (
     .assign(ENTREZ_GENE_ID = feature_data.ENTREZ_GENE_ID.fillna(0).astype("int32"))
 )
 
-# Deposit data.
+# Sanity check.
 assert (exprs_data.columns.values == pheno_data.index.values).all()
 assert (exprs_data.index.values == feature_data.index.values).all()
 
