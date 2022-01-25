@@ -3,6 +3,9 @@ import pyarrow.feather as feather
 import pandas as pd
 import numpy as np
 
+# Number of timepoints in data.
+N_TPS = 2
+
 # Data wrangling (any operations that could change
 # the number of or orientation of rows of the data frame).
 meta_data = (
@@ -25,12 +28,26 @@ meta_data = (
     # Remove medically indicated births.
     .query("outcome != 'MI'")
     # Remove observations with only one sample (want 2: T1 and T2).
-    .groupby("studyid").filter(lambda x: len(x) == 2)
+    .groupby("studyid").filter(lambda x: len(x) == N_TPS)
     # Make sure there aren't any repeated data.
     .drop_duplicates(subset = ["sample"])
     # Orient rows appropriately.
-    .sort_values(by = ["studyid", "timepoint"])
+    .sort_values(by = ["outcome", "studyid", "timepoint"])
 )
+
+# Add a "nested individual column" for DESeq2.
+def add_nested(meta_data):
+
+    v_cs = meta_data["outcome"].value_counts()
+    # Nested individual vector.
+    ind_n = np.empty( sum(v_cs) , dtype = np.int32 )
+    # Keep track of starting index.
+    start = 0
+    for vc in v_cs:
+        ind_n[ start : (start + vc) ] = np.repeat( range( vc // N_TPS ), N_TPS )
+        start += vc
+
+    return meta_data.assign( ind_n = pd.Categorical(ind_n) )
 
 # Data cleaning (no operations that will change the number
 # of nor orientation of the rows of the data frame).
@@ -43,12 +60,11 @@ meta_data = (
             .cat.rename_categories({"sPTB":"sptb"}),
         studyid = meta_data["studyid"].cat.remove_unused_categories(),
         sample = "sample_" + meta_data["sample"] + "_id",
-        # Add a "nested individual column" for DESeq2.
-        ind_n = pd.Categorical( np.repeat( range( len(meta_data) // 2 ), 2 ) )
     )
+    # Add variable.
+    .pipe(add_nested)
     .set_index("sample")
 )
-
 
 read_data = (
     feather.read_feather(source = os.path.join(os.getcwd(), "read_data_agg") )
