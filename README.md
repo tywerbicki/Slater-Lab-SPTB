@@ -1,5 +1,11 @@
 # Slater Lab - Spontaneous Preterm Birth Investigation
 
+* Library Code
+* [Affymetrix Study](How-To-Reproduce-Our-Affymetrix-Results)
+* [Bulk RNAseq Study](How-To-Reproduce-Our-Bulk-RNASeq-Results)
+
+---
+
 ## How To Reproduce Our Affymetrix Results
 
 1. Acquire the data that was used in the [*Heng et al.* investigation](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0155191) (*Heng data*):
@@ -31,7 +37,7 @@ UNDER CONSTRUCTION
 
 ---
 
-## How to Reproduce Our Bulk RNASeq Results
+## How To Reproduce Our Bulk RNASeq Results
 
 1. Acquire our bulk RNASeq data by reaching out to [Dr. Donna Slater](mailto:dmslater@ucalgary.ca):
     
