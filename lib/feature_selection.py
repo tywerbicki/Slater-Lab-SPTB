@@ -51,6 +51,13 @@ class Stepwise_Additive_Selector:
         The number of processes to use. Set to the number of physical CPU cores.
     `seed`
         Used to seed the random number generator.
+    
+    Raises
+    ------
+    ValueError:
+        1) If either `max_retained`, `n_splits`, `n_repeats`, `look_forward`,
+        `n_processes`, or `seed` is NOT a positive integer. \n
+        2) If `eps` <= 0.0 or `eps` >= 1.0
     """
     def __init__(self,
         max_retained : int = 20, n_splits : int = 5, n_repeats : int = 1, interaction_depth : int = 5,
