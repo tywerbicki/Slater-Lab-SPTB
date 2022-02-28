@@ -352,7 +352,9 @@ class Stepwise_Additive_Selector:
         if self.__n_features < self.__max_retained:
             self.__max_retained = self.__n_features
             warnings.warn(f"max_retained has been reduced to {self.__n_features}.", RuntimeWarning)
-
+        
+        global worker_func
+        
         def worker_func(X, y, start, stop, best_indices_gl, nominal_indices,
             n_splits, n_repeats, seed, best_scores_per_feat):
 
