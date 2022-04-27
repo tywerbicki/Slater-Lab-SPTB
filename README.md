@@ -26,6 +26,8 @@
 
     > Follow the code in `./affy_model.py`.
 
+    * All source code for hand-written libraries can be found in `./lib/`.
+
 ---
 
 <br/>
