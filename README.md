@@ -1,10 +1,6 @@
 # Slater Lab - Spontaneous Preterm Birth Investigation
 
-* Library Code
-* [Affymetrix Study](How-To-Reproduce-Our-Affymetrix-Results)
-* [Bulk RNAseq Study](How-To-Reproduce-Our-Bulk-RNASeq-Results)
-
----
+<br/>
 
 ## How To Reproduce Our Affymetrix Results
 
@@ -30,12 +26,9 @@
 
     > Follow the code in `affy_model.py`.
 
-<br/>
-<br/>
-
-UNDER CONSTRUCTION
-
 ---
+
+<br/>
 
 ## How To Reproduce Our Bulk RNASeq Results
 
